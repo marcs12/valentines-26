@@ -14,11 +14,21 @@ export default function ValentineLetter({ askGifUrl, celebrateGifUrl }) {
 
   // ✅ PASTE YOUR LETTER HERE (blank lines = paragraphs)
   const LETTER = `
-Hi my beautiful jo,
+Hi my beautiful Jo,
 
-I'm sorry I've seemed so busy last weekend. I wanted to make something special for you. I know it's not anything physical but I hope it can still make you happy. The same way you make me happy everyday. You know jo, I love you so much. I really love our moments together. I love hearing you laugh, I love when you're my hype man. I really love when we make fun of shows together jo. It's almost our 6 months and I feel like we've been together for a lifetime. These last 6 months have meant so much to me. We have been through so much together. So much joys and happiness but also some pretty hard times. You have no idea how grateful I am that you're still with me through it all. I feel like I'm in constant growth when I'm with you and thank you so much for always pushing you. I love you so much and I love you always. I cannot wait for what the future holds for us. I can't stop being so excited for all the things we have planned. This is only the beginning of our story.
+I’m sorry I seemed so busy last weekend. I wanted to make something special for you. I know it’s not anything physical, but I hope it still makes you happy. the same way you make me happy every single day.
 
-Oh, and one other thing.
+You know, Jo… I love you so much. I really love our moments together. I love hearing you laugh. I love when you’re my hype man. I love when we make fun of shows together. It’s the little things like that that make everything feel so much better and easier.
+
+It’s almost our six months, and it feels like we’ve been together for a lifetime. These past six months have meant so much to me. We’ve been through so much... so many joys and happiness, and also some pretty hard times. And through it all, you stayed. You have no idea how grateful I am for that.
+
+I feel like I’m constantly growing when I’m with you. Thank you for always pushing me to be better. Thank you for choosing me.
+
+I love you so much. I love you always.
+
+I can’t wait for what the future holds for us. I get so excited thinking about all the things we have planned. This is only the beginning of our story.
+
+Oh… and one other thing.
 `.trim();
 
   const letterParagraphs = useMemo(
@@ -176,9 +186,7 @@ Oh, and one other thing.
                   </button>
                 </div>
 
-                <div className="vday__mini">
-                  (You’re allowed to smile first.)
-                </div>
+                <div className="vday__mini">(I'm tooooo nice 😡)</div>
               </motion.section>
             )}
 
@@ -193,7 +201,7 @@ Oh, and one other thing.
               >
                 <div className="vday__kicker">✅ Yay</div>
                 <h2 className="vday__h2">
-                  Okay… I’m officially the happiest person.
+                  YAAAY. I LOVE YOU. I'm the luckiest guy ever jo.
                 </h2>
 
                 <motion.div
@@ -216,7 +224,7 @@ Oh, and one other thing.
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.08, duration: 0.5 }}
                 >
-                  Happy Valentine’s, my love. 💌
+                  Happy Valentine’s, my beautiful girl!!!. 💌
                 </motion.div>
 
                 <div className="vday__rowBetween">
