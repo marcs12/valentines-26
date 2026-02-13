@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 export default function ValentineLetter({ askGifUrl, celebrateGifUrl }) {
@@ -7,20 +7,25 @@ export default function ValentineLetter({ askGifUrl, celebrateGifUrl }) {
   // ✅ Swap these anytime (or pass props instead)
   const ASK_GIF =
     askGifUrl ||
-    "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbDAweGhxNGxrMzJ1d3J0Zmw5NjhsMHRmaXdlaXpicDkyc2llaWlncyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/t8xgPfC5oNIRMrNooe/giphy.gif"; // placeholder
+    "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbDAweGhxNGxrMzJ1d3J0Zmw5NjhsMHRmaXdlaXpicDkyc2llaWlncyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/t8xgPfC5oNIRMrNooe/giphy.gif";
   const CELEBRATE_GIF =
     celebrateGifUrl ||
-    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmp3YTk4eG1kdjhpY3E5N2lsb2Z5bHR5a3RtMXljdjFqZzFoZHpyYiZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/MDJ9IbxxvDUQM/giphy.gif"; // placeholder
+    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmp3YTk4eG1kdjhpY3E5N2lsb2Z5bHR5a3RtMXljdjFqZzFoZHpyYiZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/MDJ9IbxxvDUQM/giphy.gif";
+
+  // ✅ Change this to whatever you want your inside joke to be
+  const INSIDE_JOKE_LINE = `(PS. as i'm writing this. You know jo, we owe our relationship to the Tung Tung Tung sahur meme...)`;
 
   // ✅ PASTE YOUR LETTER HERE (blank lines = paragraphs)
   const LETTER = `
 Hi my beautiful Jo,
 
-I’m sorry I seemed so busy last weekend. I wanted to make something special for you. I know it’s not anything physical, but I hope it still makes you happy. the same way you make me happy every single day.
+I’m sorry I seemed so busy last weekend. I wanted to make something special for you. I know it’s not anything physical, but I hope it still makes you happy — the same way you make me happy every single day.
 
 You know, Jo… I love you so much. I really love our moments together. I love hearing you laugh. I love when you’re my hype man. I love when we make fun of shows together. It’s the little things like that that make everything feel so much better and easier.
 
-It’s almost our six months, and it feels like we’ve been together for a lifetime. These past six months have meant so much to me. We’ve been through so much... so many joys and happiness, and also some pretty hard times. And through it all, you stayed. You have no idea how grateful I am for that.
+${INSIDE_JOKE_LINE}
+
+It’s almost our six months, and it feels like we’ve been together for a lifetime. These past six months have meant so much to me. We’ve been through so much… so many joys and happiness, and also some pretty hard times. And through it all, you stayed. You have no idea how grateful I am for that.
 
 I feel like I’m constantly growing when I’m with you. Thank you for always pushing me to be better. Thank you for choosing me.
 
@@ -39,6 +44,19 @@ Oh… and one other thing.
   const [stage, setStage] = useState("envelope"); // envelope -> letter -> ask -> yes
   const [open, setOpen] = useState(false);
 
+  // --- Press & Hold reveal ---
+  const HOLD_MS = 1200;
+  const [isHolding, setIsHolding] = useState(false);
+  const [holdProgress, setHoldProgress] = useState(0); // 0..1
+  const [isRevealed, setIsRevealed] = useState(false);
+  const holdTimerRef = useRef(null);
+  const holdRAFRef = useRef(null);
+  const holdStartRef = useRef(0);
+
+  // --- Click sparkles ---
+  const [sparkles, setSparkles] = useState([]);
+  const sparkleId = useRef(0);
+
   const onOpen = () => {
     if (open) return;
     setOpen(true);
@@ -48,12 +66,114 @@ Oh… and one other thing.
   const restart = () => {
     setOpen(false);
     setStage("envelope");
+    resetHold();
+  };
+
+  const resetHold = () => {
+    setIsHolding(false);
+    setHoldProgress(0);
+    setIsRevealed(false);
+    if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+    if (holdRAFRef.current) cancelAnimationFrame(holdRAFRef.current);
+    holdTimerRef.current = null;
+    holdRAFRef.current = null;
+  };
+
+  const startHold = () => {
+    if (prefersReducedMotion) {
+      setIsRevealed(true);
+      return;
+    }
+    if (isRevealed) return;
+
+    setIsHolding(true);
+    holdStartRef.current = performance.now();
+
+    const tick = () => {
+      const now = performance.now();
+      const t = Math.min(1, (now - holdStartRef.current) / HOLD_MS);
+      setHoldProgress(t);
+      if (t < 1 && isHolding) {
+        holdRAFRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    holdRAFRef.current = requestAnimationFrame(tick);
+
+    holdTimerRef.current = setTimeout(() => {
+      setIsRevealed(true);
+      setIsHolding(false);
+      setHoldProgress(1);
+    }, HOLD_MS);
+  };
+
+  const endHold = () => {
+    if (isRevealed) return;
+    setIsHolding(false);
+    setHoldProgress(0);
+
+    if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+    if (holdRAFRef.current) cancelAnimationFrame(holdRAFRef.current);
+    holdTimerRef.current = null;
+    holdRAFRef.current = null;
+  };
+
+  const pushSparkle = (clientX, clientY) => {
+    if (prefersReducedMotion) return;
+
+    const emojiPool = ["✨", "💗", "💖", "💕", "⭐️"];
+    const emoji = emojiPool[Math.floor(Math.random() * emojiPool.length)];
+
+    const id = ++sparkleId.current;
+    setSparkles((s) => [
+      ...s,
+      {
+        id,
+        x: clientX,
+        y: clientY,
+        emoji,
+      },
+    ]);
+
+    // Remove after animation
+    window.setTimeout(() => {
+      setSparkles((s) => s.filter((p) => p.id !== id));
+    }, 650);
+  };
+
+  const onPointerDownAnywhere = (e) => {
+    // Don’t sparkle on right click
+    if (e.button === 2) return;
+
+    // Use clientX/Y for correct positioning
+    if (typeof e.clientX === "number" && typeof e.clientY === "number") {
+      pushSparkle(e.clientX, e.clientY);
+    }
   };
 
   return (
-    <div className="vday">
+    <div className="vday" onPointerDown={onPointerDownAnywhere}>
       <BackgroundHearts disabled={prefersReducedMotion} />
       <Glow disabled={prefersReducedMotion} />
+
+      {/* Sparkle overlay */}
+      <div className="vday__sparkleLayer" aria-hidden>
+        <AnimatePresence>
+          {sparkles.map((s) => (
+            <motion.span
+              key={s.id}
+              className="vday__sparkle"
+              style={{ left: s.x, top: s.y }}
+              initial={{ opacity: 0, y: 8, scale: 0.9 }}
+              animate={{ opacity: 1, y: -22, scale: 1.15 }}
+              exit={{ opacity: 0, y: -38, scale: 0.9 }}
+              transition={{ duration: 0.55, ease: "easeOut" }}
+            >
+              {s.emoji}
+            </motion.span>
+          ))}
+        </AnimatePresence>
+      </div>
 
       <div className="vday__shell">
         <main className="vday__card">
@@ -131,7 +251,10 @@ Oh… and one other thing.
                   </button>
                   <button
                     className="vday__btn vday__btn--primary vday__btn--primaryWide"
-                    onClick={() => setStage("ask")}
+                    onClick={() => {
+                      resetHold();
+                      setStage("ask");
+                    }}
                   >
                     Next
                   </button>
@@ -164,29 +287,56 @@ Oh… and one other thing.
                   />
                 </motion.div>
 
-                <motion.div
-                  className="vday__ask"
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.5,
-                    ease: "easeOut",
-                    delay: prefersReducedMotion ? 0 : 0.05,
-                  }}
-                >
-                  Will you be my Valentine?
-                </motion.div>
+                {!isRevealed ? (
+                  <>
+                    <div className="vday__holdHint">
+                      Press & hold to reveal 💗
+                    </div>
 
-                <div className="vday__rowCenter">
-                  <button
-                    className="vday__btn vday__btn--primary vday__btn--primaryWide"
-                    onClick={() => setStage("yes")}
-                  >
-                    Yes 💗
-                  </button>
-                </div>
+                    <div className="vday__holdWrap">
+                      <button
+                        className="vday__holdBtn"
+                        onPointerDown={startHold}
+                        onPointerUp={endHold}
+                        onPointerCancel={endHold}
+                        onPointerLeave={endHold}
+                      >
+                        <span className="vday__holdLabel">Hold</span>
+                        <span
+                          className="vday__holdFill"
+                          style={{ transform: `scaleX(${holdProgress})` }}
+                        />
+                      </button>
+                    </div>
 
-                <div className="vday__mini">(I'm tooooo nice 😡)</div>
+                    <div className="vday__mini">(don’t let go 😌)</div>
+                  </>
+                ) : (
+                  <>
+                    <motion.div
+                      className="vday__ask"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
+                    >
+                      Jo, will you be my Valentine?
+                    </motion.div>
+
+                    <div className="vday__rowCenter">
+                      <button
+                        className="vday__btn vday__btn--primary vday__btn--primaryWide"
+                        onClick={() => setStage("yes")}
+                      >
+                        Yes 💗
+                      </button>
+                    </div>
+
+                    <div className="vday__mini">
+                      (There's a hidden No button but don't worry you won't need
+                      it... I’m tooooo nice 😡)
+                    </div>
+                  </>
+                )}
               </motion.section>
             )}
 
@@ -201,7 +351,7 @@ Oh… and one other thing.
               >
                 <div className="vday__kicker">✅ Yay</div>
                 <h2 className="vday__h2">
-                  YAAAY. I LOVE YOU. I'm the luckiest guy ever jo.
+                  YAAAY. I LOVE YOU. I’m the luckiest guy ever, Jo.
                 </h2>
 
                 <motion.div
@@ -224,7 +374,7 @@ Oh… and one other thing.
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.08, duration: 0.5 }}
                 >
-                  Happy Valentine’s, my beautiful girl!!!. 💌
+                  Happy Valentine’s, my beautiful girl!!! 💌
                 </motion.div>
 
                 <div className="vday__rowBetween">

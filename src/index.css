@@ -421,3 +421,63 @@
     border-radius: 16px;
   }
 }
+
+/* --- Press & Hold Reveal --- */
+.vday__holdHint {
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.78;
+  margin: 10px 0 10px;
+}
+
+.vday__holdWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.vday__holdBtn {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  height: 52px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.vday__holdLabel {
+  position: relative;
+  z-index: 2;
+}
+
+.vday__holdFill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  background: rgba(255, 255, 255, 0.16);
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+  z-index: 1;
+}
+
+/* --- Sparkles on click --- */
+.vday__sparkleLayer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.vday__sparkle {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.45));
+}
