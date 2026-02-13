@@ -6,22 +6,19 @@ export default function ValentineLetter({ askGifUrl, celebrateGifUrl }) {
 
   // ✅ Swap these anytime (or pass props instead)
   const ASK_GIF =
-    askGifUrl || "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif"; // placeholder
+    askGifUrl ||
+    "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbDAweGhxNGxrMzJ1d3J0Zmw5NjhsMHRmaXdlaXpicDkyc2llaWlncyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/t8xgPfC5oNIRMrNooe/giphy.gif"; // placeholder
   const CELEBRATE_GIF =
     celebrateGifUrl ||
-    "https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif"; // placeholder
+    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmp3YTk4eG1kdjhpY3E5N2lsb2Z5bHR5a3RtMXljdjFqZzFoZHpyYiZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/MDJ9IbxxvDUQM/giphy.gif"; // placeholder
 
   // ✅ PASTE YOUR LETTER HERE (blank lines = paragraphs)
   const LETTER = `
-Hi love,
+Hi my beautiful jo,
 
-[Write your letter here…]
-[Add a sweet memory…]
-[Add what you appreciate about her…]
-[End with something that sounds like you.]
+I'm sorry I've seemed so busy last weekend. I wanted to make something special for you. I know it's not anything physical but I hope it can still make you happy. The same way you make me happy everyday. You know jo, I love you so much. I really love our moments together. I love hearing you laugh, I love when you're my hype man. I really love when we make fun of shows together jo. It's almost our 6 months and I feel like we've been together for a lifetime. These last 6 months have meant so much to me. We have been through so much together. So much joys and happiness but also some pretty hard times. You have no idea how grateful I am that you're still with me through it all. I feel like I'm in constant growth when I'm with you and thank you so much for always pushing you. I love you so much and I love you always. I cannot wait for what the future holds for us. I can't stop being so excited for all the things we have planned. This is only the beginning of our story.
 
-Love,
-Marc
+Oh, and one other thing.
 `.trim();
 
   const letterParagraphs = useMemo(
